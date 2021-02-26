@@ -1,0 +1,2 @@
+type bin/cpp
+deps syntics/common syntics/cpp console/*
