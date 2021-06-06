@@ -3,28 +3,21 @@ template<typename T>
 class Class1 : Parent {
     T caracola;
     int number = 5;
-    int operator++() const {
+    int operator++() const {}
 
-    }
-    Class1() : number(6), name("hola caracola") {
+    Class1(const Class1<T>* bro)
+    : number(6)
+    , name("Joe")
+    , brother(bro)
+    {}
 
-    }
-    void operator()() const {
+    void operator()() const {}
+    void operator--() const {}
+    operator bool() const {}
 
-    }
-    void operator--() const {
-
-    }
-    operator bool() const {
-
-    }
-
-    for(int i : intvector){
-
+    void intit(){
+        for(int i : intvector){}
     }
     const Class1* brother;
-    Class1 pelos;
-    operator Class1() const {
-
-    }
+    operator str() const {}
 }
