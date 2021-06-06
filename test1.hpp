@@ -1,1 +1,1 @@
-namespace nams { struct { float f1; int n1; }; class Class2 { str s1; str g4; const Class1 * obj1; Class1(); int fun2(); void foo(){ bar();int hola=78; } }; } namespace { float f1; int n1; }
+namespace nams { struct { float f1; int n1; }; class Class2 { str s1; str g4; const Class1 * obj1; Class2(); int fun2(); void foo(){ bar();int hola=78; } }; } namespace { float f1; int n1; }

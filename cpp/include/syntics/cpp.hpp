@@ -166,34 +166,9 @@ namespace syntics
         using OneLineComment   = SyntaxBase<impl::Annotation<0,true>, Annotation>;
         using MultiLineComment = SyntaxBase<impl::Annotation<1,false>, Annotation>;
         using Directive        = SyntaxBase<impl::Annotation<2,true>, Annotation>;
-        /*struct PBlock     : Base { static PBlock*     make(const str& s);     PBlock(const str&); str to_str() const { return "()"; }};
-        struct CBlock     : Base { static CBlock*     make(const str& s);     CBlock(const str&); str to_str() const { return "{}"; }};
-        struct SBlock     : Base { static SBlock*     make(const str& s);     SBlock(const str&); str to_str() const { return "[]"; }};
-        struct TBlock     : Base { static TBlock*     make(const str& s);     str to_str() const { return "<>"; }};
-        struct LBlock     : Base { static LBlock*     make(const str& s);     str to_str() const { return "{:}"; }};
-        struct StrLiteral : Base { static StrLiteral* make(const str& s); StrLiteral(const str&); str token;  str to_str() const { return token; }};
-        struct Colon      : Base { static Colon*      make(const str& s);     Colon();           str to_str() const { return ":"; }};
-        struct Separator  : Base { static Separator*  make(const str& s);  Separator(const str&); str token;  str to_str() const { return mkstr("sep: ",token); }};
-        struct Operator   : Base { static Operator*   make(const str& s);   Operator(const str&); str token;  str to_str() const { return mkstr("ope: ",token); }};
-        struct Keyword    : Base { static Keyword*    make(const str& s);    Keyword(const str&); str token;  str to_str() const { return mkstr("key: ",token); }};
-        struct Qualifier  : Base { static Qualifier*  make(const str& s);  Qualifier(const str&); str token;  str to_str() const { return mkstr("qua: ",token); }};
-        struct Name       : Base { static Name*       make(const str& s);       Name(const str&); str token;  str to_str() const { return mkstr("nam: ",token); }};
-        struct BuiltType  : Base { static BuiltType*  make(const str& s);  BuiltType(const str&); str token;  str to_str() const { return mkstr("bit: ",token); }};
-        struct Annotation : Base { static Annotation* make(const str& s); Annotation(const str&); str token;  str to_str() const { return mkstr("cmt: ",token); }};*/
-
-
-        //using BaseUnit = StructTree<Base,Root,
-        //                         Annotation,PBlock,CBlock,SBlock,LBlock,TBlock,StrLiteral,Colon,Separator,Keyword,Separator,Operator,Qualifier,Name>;
         using Unit = StructTree<Base,Root,OneLineComment,MultiLineComment,Directive,Instruction,Control,TBlock,LBlock,SBlock,PBlock,CBlock,Operator,Colon,QuestionMark,Marker,Separator,Qualifier,Keyword,LangType,Name>;
                                     //Annotation,PBlock,CBlock,SBlock,LBlock,TBlock>;//,StrLiteral,Colon,Separator,Keyword,Separator,Operator,Qualifier,Name>;
 
-        /*struct Unit : public BaseUnit
-        {
-            Unit(Base*);
-            Unit();
-        };*/
-
-        //using Units = vector<Unit>;
         using Model = ParseModel<Unit>;
         using Tree = jch::est::tree<Model>;
 
@@ -292,12 +267,6 @@ namespace syntics
             vector<syntax::Name*>& name;
             syntax::CBlock& cblock;
             vector<syntax::LBlock*>& lblock;
-            //vector<syntax::Name*>& declnames;
-           /* Struct(syntax::Keyword* k,vector<syntax::Name*> n,vector<syntax::LBlock*> l,syntax::CBlock* c,vector<syntax::Name*> dn) : StructP(k,n,l,c,dn), keyword(*reftoken<0>()),
-                                                                                                 name(reftoken<1>()),
-                                                                                                 lblock(reftoken<2>()),
-                                                                                                 cblock(*reftoken<3>()),
-                                                                                                 declnames(reftoken<4>()){}*/
             Struct(vector<syntax::TBlock*> t,syntax::Keyword* k,vector<syntax::Name*> n,vector<syntax::LBlock*> l,syntax::CBlock* c) : StructP(t,k,n,l,c), 
                                                                                                  template_block(reftoken<0>()),
                                                                                                  keyword(*reftoken<1>()),
@@ -554,11 +523,6 @@ namespace syntics
 
         using Unit = StructTree<Base,Root,
                                         Namespace>;
-        /*struct Unit : public BaseUnit
-        {
-            Unit();
-            Unit(Base*);
-        };*/
 
         struct Model : public ParseModel<Unit>
         {
@@ -575,14 +539,9 @@ namespace syntics
 
         using Tree = jch::est::tree<Model>;
 
-        //vector<syntax::Annotation*> collect_annotations(Tree&,Tree::iterator);
     }
 
     namespace cpp {
-
-       /* syntax::Tree    tokenize(const str& text);
-        semantics::Tree find_semantics(const syntax::Tree&,ParseHelper* p = nullptr);
-        syntax::Tree    syntax_flatten(const semantics::Tree&);*/
 
         semantics::Tree parse(const str&,ParserHelper* p = nullptr);
         str flatten(const semantics::Tree&);

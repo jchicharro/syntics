@@ -27,13 +27,11 @@ namespace syntics::syntax
     void Parser::onChild(Model& t,Model& parent,size_t pos)
     {
         t.beg = pos;
-        //parent.model.add_child(t.model());
     }
     void Parser::onElderBrother(Model& t,size_t pos) { t.end = pos; build(t); }
     void Parser::onYoungerBrother(Model& t,Model& parent,size_t pos)
     {
-        t.beg = pos; 
-        //parent.model.add_child(t.model());
+        t.beg = pos;
     }
     void Parser::onClose(Model& t,size_t pos) { t.end = pos; build(t); }
     void Parser::onReturn(Model& t,size_t pos) {t.end = pos; }
@@ -42,10 +40,8 @@ namespace syntics::syntax
     {
         if (t.end >= text->size()) return; // TODO: revise why this happens
         if (t.beg == -1 || t.end == -1) return; // TODO: same as above
-        //print(mkstr("building .",text->substr(t.beg,t.end-t.beg+1),". ",t.beg,":",t.end));
 
         t.model.try_make<str>(text->substr(t.beg,t.end-t.beg+1));
-        //print("built");
     }
 
     void Parser::start(const str& text){
@@ -63,15 +59,10 @@ namespace syntics::syntax
     }
 
     Parser::Parser(ParserHelper& h) : jch::est::TreeParser<Model,AddChar>(), helper(h) {
-        //tree_delimiters = { {"(",")"} ,{"{","}"},{"[","]"} };
         str::pair_list delims;
         for(const str& pair : Lexems::block_markers)
             tree_delimiters.push_back( { str(pair[0]),str(pair[1]) } );
-        //tree_delimiters = syntics::Lexblockers;
-        //separators = {";",",","=","*","-","&&"};
-        //this->separators = all_tokens;
-        
-        //cpp_known_types     = built_in_types;
+            
         this->separators = Lexems::separators + Lexems::operators + Lexems::syntax_markers;
         this->known_tokens = Lexems::separators + Lexems::operators + Lexems::syntax_markers;//all_tokens;
         parse_delimiters = {};
@@ -96,9 +87,8 @@ namespace syntics::syntax
         };
         auto inheritance_qualifiers_list = [&syntax_tree,is_inhericante_qualifier](syntax::Tree::iterator it)->bool
         {
-            //print(mkstr("propcheck colon: ",it->model()->to_str()));
             if (!it.down()) return false;
-            //print(mkstr("propcheck colon: ",it->model()->to_str()));
+            
             auto it_hq = it.find_next(is_inhericante_qualifier);
 
             if (!it_hq) return false;
@@ -128,9 +118,9 @@ namespace syntics::syntax
         };
         auto check_colon_property_list = [&syntax_tree](syntax::Tree::iterator it)->bool
         {
-            //print(mkstr("propcheck colon: ",it->model()->to_str()));
+            
             if (!it.down()) return false;
-            //print(mkstr("propcheck colon: ",it->model()->to_str()));
+            
             auto [it_beg,it_end] = it.find_range(&syntax::Model::is<Colon>,
                                                     &syntax::Model::is<CBlock>);
             if (!it_beg || !it_end) return false;
@@ -218,7 +208,6 @@ namespace syntics::syntax
                 it = it.find_next(is_operator_keyword);
                 if (!it) break;
                 if (!it.next()) break;
-                print(it->model()->to_str());
                 if (it->cast<syntax::SBlock>())
                     it->model.set<Operator>("[]");
                 else if (it->cast<syntax::PBlock>())
@@ -240,9 +229,7 @@ namespace syntics::syntax
                     str lastname;
                     if (colcol == -1) lastname = typenam;
                     else{
-                        //print(mkstr("colons found in ",typenam));
                         lastname = typenam.substr(colcol+2);
-                        //print(mkstr("lastname ",lastname));
                     }
                     if (hhelper.is_type(lastname)){
                         bool is_class  = hhelper.user_classes.has(lastname);
@@ -281,8 +268,6 @@ namespace syntics::syntax
             while (it.next());
         };
 
-        //print("PARSING CONTEXT");
-        //print(join(hhelper.user_classes,' '));
         syntax_tree.iterate_it
         (
             [check_colon_property_list,check_templates,check_full_types,check_known_types,convert_types,inheritance_qualifiers_list,collapse_operators]

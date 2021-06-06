@@ -1,23 +1,10 @@
 #include <syntics/cpp.hpp>
-//#include <est1>
 #include <est/Exception.hpp>
 #include <console/input.hpp>
 #include <jch/fs>
 #include <jch/json>
 
 using namespace jch::json;
-
-/*void translate_cpp_to_js(const str::list args)
-{
-    str::list hpps = args.select([](const str& s){ return s.ends(".hpp"); });
-    str::list cpps = args.select([](const str& s){ return s.ends(".cpp"); });
-
-    file::jch_list hpp_files = hpps.transform<file>([](const str& path)->file{ return file(path); });
-    file::jch_list cpp_files = cpps.transform<file>([](const str& path)->file{ return file(path); });
-
-    yaparse::cpp_to_js(hpp_files,cpp_files);
-
-}*/
 
 using namespace syntics;
 
@@ -78,7 +65,7 @@ void parse_cpp(const str::list args)
 
     ParserHelper parserHelper;
     Config config;
-    //parserHelper.user_classes = config["user_classes"].split(' ');
+
     parserHelper.user_classes = get_known_types();
 
     for(int i=0;i<args.size();++i){
@@ -128,8 +115,6 @@ struct CheckResult
 
 void check_cpp(const str::list iargs)
 {
-   // print(iargs.size());
-   // print(iargs[0]);
     str::list args;
     str::list file_contents;
     if (iargs.empty())
@@ -137,10 +122,8 @@ void check_cpp(const str::list iargs)
     else args = iargs;
     ParserHelper parserHelper;
     Config config;
-    //parserHelper.user_classes = config["user_classes"].split(' ');
     parserHelper.user_classes = get_known_types();
     file_contents = args.transform<str>([](const str& path)->str{ return file(path).read(); });
-  //  print(args.size());
 
     vector<CheckResult> results;
 
@@ -151,8 +134,6 @@ void check_cpp(const str::list iargs)
         size_t all_total(0);
         size_t all_ok(0);
         for(int i=0;i<args.size();++i){
-            //print(mkstr("file: ",args[i]));
-            //print("----------------------");
             parserHelper.reset();
             cpp::flatten(cpp::parse(file_contents[i],&parserHelper));
             size_t ok = parserHelper.total_ok;
@@ -192,28 +173,6 @@ void check_cpp(const str::list iargs)
     jch::est::file("itest.output").write(jsonobj->to_str());
     update_known_types(parserHelper.types());
 }
-/*void try_parse_cpp(const str::list args)
-{
-    using namespace jch::console;
-    for(int i=0;i<args.size();++i){
-        file::list files;
-        if (is_dir(args[i])) files = file_list((std::string)args[i],"hpp|cpp",true);
-        else files = {args[i]};
-        for(const file& f : files)
-        {
-            print(mkstr("file: ",f.filename()));
-            try{
-                yaparse::cpp_to_agnostic(f.read());
-                print(mkstr(" -> ",color::bf_black_green("OK")));
-            }
-            catch(const std::exception& e)
-            {
-                print(mkstr(" -> ",color::bf_black_red("Failed:")," ",e.what()));
-            }
-        }
-    }
-
-}*/
 
 void parse_input(int narg,char ** argv,
                  vector<std::pair<str,std::function<void(const str::list&)>>> to_fun)
@@ -237,29 +196,18 @@ void parse_input(int narg,char ** argv,
 
     str blue(const str& s) { return str("\033[40;34m") + s + str("\033[0m"); }
 
-void test_replace(const str::list& args)
-{
-    str str1 = str("pelos ") + blue(args[0]);
-    print(mkstr("testing: ",str1));
-    //remove_color(str1);
-    print(mkstr("result: ",str1.replace("\033","\\033")));
-}
 int main(int narg,char ** argv)
 {
  //   std::function<void(const str::list&)> tcj  = translate_cpp_to_js;
     std::function<void(const str::list&)> cppp = parse_cpp;
     std::function<void(const str::list&)> cppc = check_cpp;
-    std::function<void(const str::list&)> tres = test_replace;
- //   std::function<void(const str::list&)> tcpp = try_parse_cpp;
     try
     {
         parse_input(narg,argv,
                     {
    //                    { "cpp_js" , tcj },
                        { "cpp_parse", cppp},
-                       { "cpp_check", cppc},
-                       { "test_replace", tres}
-     //                  { "try_cpp_parse", tcpp}
+                       { "cpp_check", cppc}
                     }
                     );
     }
